@@ -10,6 +10,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('products/{product}/price-history', [App\Http\Controllers\Api\PriceHistoryController::class, 'show']);
     Route::get('products/{product}/store-comparison', [App\Http\Controllers\Api\StoreComparisonController::class, 'show']);
+
+    Route::get('/dashboard-stats', App\Http\Controllers\DashboardStatsController::class);
 });
 
 Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
