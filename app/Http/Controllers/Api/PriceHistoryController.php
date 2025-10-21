@@ -16,7 +16,7 @@ class PriceHistoryController extends Controller
     /**
      * Display the price history for a specific product.
      */
-    public function show(Product $product)
+    public function __invoke(Product $product)
     {
         // 1. Obtener los datos planos de la base de datos
         $rawData = $product->shoppingItems()

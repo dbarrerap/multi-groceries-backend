@@ -3,48 +3,33 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\ApiResponse;
 use App\Models\Product;
-use App\Models\ShoppingItem;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class StoreComparisonController extends Controller
 {
-    /**
-     * Display the latest price of a product across different stores.
-     */
-    public function show(Product $product): Response
-    {
-        $storeComparison = [];
+    use ApiResponse;
 
-        $shoppingItems = $product->shoppingItems()
-            ->with(['shoppingRecord.store'])
-            ->orderByDesc(
-                ShoppingItem::select('date')
-                    ->from('shopping_records')
-                    ->whereColumn('shopping_records.id', 'shopping_items.shopping_record_id')
-                    ->limit(1)
-            )
+    public function __invoke(Product $product): JsonResponse
+    {
+        $storeComparison = DB::table('shopping_items as si')
+            ->join('shopping_records as sr', 'si.shopping_record_id', '=', 'sr.id')
+            ->join('stores as s', 'sr.store_id', '=', 's.id')
+            ->select('s.name as store_name', 's.location as store_location', 'si.price', 'sr.date')
+            ->where('si.product_id', $product->id)
+            ->whereIn('si.id', function ($query) use ($product) {
+                $query->select(DB::raw('MAX(si_inner.id)'))
+                    ->from('shopping_items as si_inner')
+                    ->join('shopping_records as sr_inner', 'si_inner.shopping_record_id', '=', 'sr_inner.id')
+                    ->whereColumn('sr_inner.store_id', 's.id')
+                    ->where('si_inner.product_id', DB::raw($product->id))
+                    ->groupBy('sr_inner.store_id');
+            })
+            ->orderBy('sr.date', 'desc')
             ->get();
 
-        $latestPrices = [];
-
-        foreach ($shoppingItems as $item) {
-            $storeId = $item->shoppingRecord->store->id;
-            $recordDate = $item->shoppingRecord->date;
-
-            if (!isset($latestPrices[$storeId]) || $recordDate > $latestPrices[$storeId]['date']) {
-                $latestPrices[$storeId] = [
-                    'store_name' => $item->shoppingRecord->store->name,
-                    'price' => $item->price,
-                    'date' => $recordDate,
-                ];
-            }
-        }
-
-        // Convert associative array to indexed array for consistent JSON output
-        $storeComparison = array_values($latestPrices);
-
-        return response($storeComparison);
+        return $this->successResponse($storeComparison);
     }
 }
