@@ -10,6 +10,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('products/{product}/price-history', App\Http\Controllers\Api\PriceHistoryController::class);
     Route::get('products/{product}/store-comparison', App\Http\Controllers\Api\StoreComparisonController::class);
+    Route::post('price-estimator', App\Http\Controllers\Api\PriceEstimatorController::class);
 
     Route::get('/reports/most-purchased-products', App\Http\Controllers\Api\Reports\MostPurchasedProductsController::class);
 
