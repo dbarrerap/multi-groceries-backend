@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Menu;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MenuSeeder extends Seeder
@@ -13,73 +12,59 @@ class MenuSeeder extends Seeder
      */
     public function run(): void
     {
-        // Clear the table before seeding
-        Menu::query()->delete();
+        $menuItems = [
+            // Vertical Menu Items (Originales)
+            ['id' => 1, 'title' => 'Dashboard', 'router_link' => '/', 'icon' => 'dashboard', 'type' => 'vertical', 'parent_id' => 0, 'role' => null],
+            ['id' => 600, 'title' => 'Cotizador', 'router_link' => '/cotizador', 'icon' => 'calculate', 'type' => 'vertical', 'parent_id' => 0, 'role' => null],
+            ['id' => 300, 'title' => 'Tiendas', 'router_link' => '/stores/list', 'icon' => 'store', 'type' => 'vertical', 'parent_id' => 0, 'role' => null],
+            ['id' => 301, 'title' => 'Productos', 'router_link' => '/products', 'icon' => 'shopping_cart', 'type' => 'vertical', 'has_sub_menu' => true, 'parent_id' => 0, 'role' => null],
+            ['id' => 302, 'title' => 'Crear Producto', 'router_link' => '/products/create', 'icon' => 'add_circle', 'type' => 'vertical', 'parent_id' => 301, 'role' => null],
+            ['id' => 303, 'title' => 'Configuracion', 'router_link' => '/products/settings', 'icon' => 'settings', 'type' => 'vertical', 'parent_id' => 301, 'role' => null],
+            ['id' => 304, 'title' => 'Lista de Productos', 'router_link' => '/products/list', 'icon' => 'list', 'type' => 'vertical', 'parent_id' => 301, 'role' => null],
+            ['id' => 400, 'title' => 'Registro de Compra', 'router_link' => '/shopping-records', 'icon' => 'receipt', 'type' => 'vertical', 'has_sub_menu' => true, 'parent_id' => 0, 'role' => null],
+            ['id' => 401, 'title' => 'Lista de Registros de Compra', 'router_link' => '/shopping-records/list', 'icon' => 'list_alt', 'type' => 'vertical', 'parent_id' => 400, 'role' => null],
+            ['id' => 402, 'title' => 'Crear Registro de Compra', 'router_link' => '/shopping-records/create', 'icon' => 'add_shopping_cart', 'type' => 'vertical', 'parent_id' => 400, 'role' => null],
+            ['id' => 500, 'title' => 'Reportes', 'router_link' => '/reports', 'icon' => 'analytics', 'type' => 'vertical', 'has_sub_menu' => true, 'parent_id' => 0, 'role' => null],
+            ['id' => 501, 'title' => 'Temporal por Producto', 'router_link' => '/analysis/temporal-product', 'icon' => 'timeline', 'type' => 'vertical', 'parent_id' => 500, 'role' => null],
+            ['id' => 502, 'title' => 'Productos Más Comprados', 'router_link' => '/reports/most-purchased', 'icon' => 'star', 'type' => 'vertical', 'parent_id' => 500, 'role' => null],
+            ['id' => 2, 'title' => 'Users', 'router_link' => '/users', 'icon' => 'supervisor_account', 'type' => 'vertical', 'parent_id' => 0, 'role' => null],
+            ['id' => 45, 'title' => 'Blank', 'router_link' => '/blank', 'icon' => 'check_box_outline_blank', 'type' => 'vertical', 'parent_id' => 0, 'role' => null],
 
-        $verticalMenuItems = [
-            [1, 'Dashboard', '/', null, 'dashboard', null, false, 0],
-            [600, 'Cotizador', '/cotizador', null, 'calculate', null, false, 0],
-            [300, 'Tiendas', '/stores/list', null, 'store', null, false, 0],
-            [301, 'Productos', '/products', null, 'shopping_cart', null, true, 0],
-            [302, 'Crear Producto', '/products/create', null, 'add_circle', null, false, 301],
-            [303, 'Configuracion', '/products/settings', null, 'settings', null, false, 301],
-            [304, 'Lista de Productos', '/products/list', null, 'list', null, false, 301],
-            [400, 'Registro de Compra', '/shopping-records', null, 'receipt', null, true, 0],
-            [401, 'Lista de Registros de Compra', '/shopping-records/list', null, 'list_alt', null, false, 400],
-            [402, 'Crear Registro de Compra', '/shopping-records/create', null, 'add_shopping_cart', null, false, 400],
-            [500, 'Reportes', '/reports', null, 'analytics', null, true, 0],
-            [501, 'Temporal por Producto', '/analysis/temporal-product', null, 'timeline', null, false, 500],
-            [502, 'Productos Más Comprados', '/reports/most-purchased', null, 'star', null, false, 500],
-            [2, 'Users', '/users', null, 'supervisor_account', null, false, 0],
-            // [15, 'Dynamic Menu', '/dynamic-menu', null, 'format_list_bulleted', null, false, 0],
-            // [43, 'Login', '/login', null, 'exit_to_app', null, false, 40],
-            // [44, 'Register', '/register', null, 'person_add', null, false, 40],
-            [45, 'Blank', '/blank', null, 'check_box_outline_blank', null, false, 40],
-            // [200, 'External Link', null, 'http://themeseason.com', 'open_in_new', '_blank', false, 0]
+            // NUEVOS ITEMS DE ADMIN (Vertical)
+            ['id' => 700, 'title' => 'Panel de Control', 'router_link' => null, 'icon' => 'admin_panel_settings', 'type' => 'vertical', 'has_sub_menu' => true, 'parent_id' => 0, 'role' => 'Admin'],
+            ['id' => 701, 'title' => 'Usuarios', 'router_link' => '/admin/users', 'icon' => 'supervisor_account', 'type' => 'vertical', 'parent_id' => 700, 'role' => 'Admin'],
+
+            // Horizontal Menu Items (Originales)
+            ['id' => 1001, 'title' => 'Dashboard', 'router_link' => '/', 'icon' => 'dashboard', 'type' => 'horizontal', 'parent_id' => 0, 'role' => null],
+            ['id' => 1600, 'title' => 'Cotizador', 'router_link' => '/cotizador', 'icon' => 'calculate', 'type' => 'horizontal', 'parent_id' => 0, 'role' => null],
+            ['id' => 1300, 'title' => 'Tiendas', 'router_link' => '/stores/list', 'icon' => 'store', 'type' => 'horizontal', 'parent_id' => 0, 'role' => null],
+            ['id' => 1301, 'title' => 'Productos', 'router_link' => '/products', 'icon' => 'shopping_cart', 'type' => 'horizontal', 'has_sub_menu' => true, 'parent_id' => 0, 'role' => null],
+            ['id' => 1302, 'title' => 'Crear Producto', 'router_link' => '/products/create', 'icon' => 'add_circle', 'type' => 'horizontal', 'parent_id' => 1301, 'role' => null],
+            ['id' => 1303, 'title' => 'Configuracion', 'router_link' => '/products/settings', 'icon' => 'settings', 'type' => 'horizontal', 'parent_id' => 1301, 'role' => null],
+            ['id' => 1304, 'title' => 'Lista de Productos', 'router_link' => '/products/list', 'icon' => 'list', 'type' => 'horizontal', 'parent_id' => 1301, 'role' => null],
+            ['id' => 1400, 'title' => 'Registro de Compra', 'router_link' => '/shopping-records', 'icon' => 'receipt', 'type' => 'horizontal', 'has_sub_menu' => true, 'parent_id' => 0, 'role' => null],
+            ['id' => 1401, 'title' => 'Lista de Registros de Compra', 'router_link' => '/shopping-records/list', 'icon' => 'list_alt', 'type' => 'horizontal', 'parent_id' => 1400, 'role' => null],
+            ['id' => 1402, 'title' => 'Crear Registro de Compra', 'router_link' => '/shopping-records/create', 'icon' => 'add_shopping_cart', 'type' => 'horizontal', 'parent_id' => 1400, 'role' => null],
+            ['id' => 1500, 'title' => 'Reportes', 'router_link' => '/reports', 'icon' => 'analytics', 'type' => 'horizontal', 'has_sub_menu' => true, 'parent_id' => 0, 'role' => null],
+            ['id' => 1501, 'title' => 'Temporal por Producto', 'router_link' => '/analysis/temporal-product', 'icon' => 'timeline', 'type' => 'horizontal', 'parent_id' => 1500, 'role' => null],
+            ['id' => 1502, 'title' => 'Productos Más Comprados', 'router_link' => '/reports/most-purchased', 'icon' => 'star', 'type' => 'horizontal', 'parent_id' => 1500, 'role' => null],
         ];
 
-        $horizontalMenuItems = [
-            [1001, 'Dashboard', '/', null, 'dashboard', null, false, 0],
-            [1600, 'Cotizador', '/cotizador', null, 'calculate', null, false, 0],
-            [1300, 'Tiendas', '/stores/list', null, 'store', null, false, 0],
-            [1301, 'Productos', '/products', null, 'shopping_cart', null, true, 0],
-            [1302, 'Crear Producto', '/products/create', null, 'add_circle', null, false, 1301],
-            [1303, 'Configuracion', '/products/settings', null, 'settings', null, false, 1301],
-            [1304, 'Lista de Productos', '/products/list', null, 'list', null, false, 1301],
-            [1400, 'Registro de Compra', '/shopping-records', null, 'receipt', null, true, 0],
-            [1401, 'Lista de Registros de Compra', '/shopping-records/list', null, 'list_alt', null, false, 1400],
-            [1402, 'Crear Registro de Compra', '/shopping-records/create', null, 'add_shopping_cart', null, false, 1400],
-            [1500, 'Reportes', '/reports', null, 'analytics', null, true, 0],
-            [1501, 'Temporal por Producto', '/analysis/temporal-product', null, 'timeline', null, false, 1500],
-            [1502, 'Productos Más Comprados', '/reports/most-purchased', null, 'star', null, false, 1500],
-        ];
-
-        foreach ($verticalMenuItems as $item) {
-            Menu::create([
-                'id' => $item[0],
-                'title' => $item[1],
-                'router_link' => $item[2],
-                'href' => $item[3],
-                'icon' => $item[4],
-                'target' => $item[5],
-                'has_sub_menu' => $item[6],
-                'parent_id' => $item[7],
-                'type' => 'vertical'
-            ]);
-        }
-
-        foreach ($horizontalMenuItems as $item) {
-            Menu::create([
-                'id' => $item[0],
-                'title' => $item[1],
-                'router_link' => $item[2],
-                'href' => $item[3],
-                'icon' => $item[4],
-                'target' => $item[5],
-                'has_sub_menu' => $item[6],
-                'parent_id' => $item[7],
-                'type' => 'horizontal'
-            ]);
+        foreach ($menuItems as $item) {
+            Menu::updateOrCreate(
+                ['id' => $item['id']],
+                [
+                    'title' => $item['title'],
+                    'router_link' => $item['router_link'],
+                    'icon' => $item['icon'],
+                    'type' => $item['type'],
+                    'parent_id' => $item['parent_id'],
+                    'role' => $item['role'],
+                    'has_sub_menu' => $item['has_sub_menu'] ?? false,
+                    'href' => $item['href'] ?? null,
+                    'target' => $item['target'] ?? null,
+                ]
+            );
         }
     }
 }
