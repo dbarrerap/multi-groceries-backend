@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        $this->call(CatalogSeeder::class);
+
         // Call the seeder for the menu
         $this->call(MenuSeeder::class);
     }
