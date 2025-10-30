@@ -27,6 +27,7 @@ class ProductController extends Controller
             $page = $request->input('page', 1);
 
             $products = Product::query()
+                ->with('category', 'unitOfMeasure')
                 ->when($request->filled('name'), function ($query) use ($request) {
                     $query->where('name', 'ilike', '%' . $request->input('name') . '%');
                 })
@@ -47,13 +48,13 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category' => 'nullable|string|max:255',
             'brand' => 'nullable|string|max:255',
-            'unit_of_measure' => 'nullable|string|max:255',
+            'category_id' => 'nullable|exists:catalogs,id',
+            'unit_of_measure_id' => 'nullable|exists:catalogs,id',
         ]);
 
         $product = Product::create($validated);
-        return response()->json(['data' => $product], 201);
+        return response()->json(['data' => $product->load('category', 'unitOfMeasure')], 201);
     }
 
     /**
@@ -61,7 +62,7 @@ class ProductController extends Controller
      */
     public function show(Product $product): JsonResponse
     {
-        return response()->json(['data' => $product]);
+        return response()->json(['data' => $product->load('category', 'unitOfMeasure')]);
     }
 
     /**
@@ -71,13 +72,13 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'category' => 'nullable|string|max:255',
             'brand' => 'nullable|string|max:255',
-            'unit_of_measure' => 'nullable|string|max:255',
+            'category_id' => 'nullable|exists:catalogs,id',
+            'unit_of_measure_id' => 'nullable|exists:catalogs,id',
         ]);
 
         $product->update($validated);
-        return response()->json(['data' => $product]);
+        return response()->json(['data' => $product->load('category', 'unitOfMeasure')]);
     }
 
     /**
